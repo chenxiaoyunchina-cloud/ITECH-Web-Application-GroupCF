@@ -5,13 +5,13 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
-    list_display = ("username", "email", "role", "is_staff", "is_active")
+    list_display = ("username", "email", "role", "selected_city", "is_staff", "is_active")
     list_filter = ("role", "is_staff", "is_active")
 
     fieldsets = DjangoUserAdmin.fieldsets + (
-        ("SideQuest City", {"fields": ("role",)}),
+        ("SideQuest City", {"fields": ("role", "selected_city")}),
     )
 
     add_fieldsets = DjangoUserAdmin.add_fieldsets + (
-        ("SideQuest City", {"fields": ("email", "role")}),
+        ("SideQuest City", {"fields": ("email", "role", "selected_city")}),
     )
