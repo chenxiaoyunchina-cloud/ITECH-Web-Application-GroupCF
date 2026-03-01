@@ -1,6 +1,6 @@
 # Create your views here.
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from world.models import City
@@ -29,3 +29,20 @@ def select_city(request):
         "accounts/select_city.html",
         {"cities": cities, "selected_city": request.user.selected_city},
     )
+
+@login_required
+def me(request):
+    city = request.user.selected_city
+    data = {
+        "id": request.user.id,
+        "username": request.user.username,
+        "email": request.user.email,
+        "role": request.user.role,
+        "selected_city": None if not city else {
+            "id": city.id,
+            "name": city.name,
+            "lat": str(city.lat),
+            "long": str(city.long),
+        }
+    }
+    return JsonResponse(data)
