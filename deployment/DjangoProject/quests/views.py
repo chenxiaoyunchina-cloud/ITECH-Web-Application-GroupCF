@@ -234,6 +234,11 @@ def complete_quest(request):
     run.note = note
     run.status = QuestRun.Status.COMPLETED
     run.completed_at = timezone.now()
+
+    proof = request.FILES.get("proof_file")
+    if proof is not None:
+        run.proof_file = proof = proof
+
     run.save()
 
     return JsonResponse(
@@ -245,5 +250,6 @@ def complete_quest(request):
             "distance_km": None if run.distance_km is None else str(run.distance_km),
             "steps": run.steps,
             "note": run.note,
+            "proof_file": run.proof_file.url if run.proof_file else None,
         }
     )
