@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Post, Comment, Reaction
 
 # Register your models here.
 
@@ -14,4 +14,10 @@ class PostAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "post", "user", "visibility", "created_at")
     list_filter = ("visibility",)
+    search_fields = ("user__username", "post__run__quest__name", "post__run__city__name")
+
+@admin.register(Reaction)
+class ReactionAdmin(admin.ModelAdmin):
+    list_display = ("id", "post", "user", "reaction_type", "created_at")
+    list_filter = ("reaction_type",)
     search_fields = ("user__username", "post__run__quest__name", "post__run__city__name")
