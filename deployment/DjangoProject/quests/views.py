@@ -10,7 +10,7 @@ from .models import QuestTemplate, QuestRun
 
 @login_required
 def recommend_quest(request):
-    #Require city selection first
+    #REQUIRE city selection first
     if request.user.selected_city is None:
         return HttpResponseBadRequest("selected_city is not set for this user")
 
@@ -24,12 +24,12 @@ def recommend_quest(request):
     except ValueError:
         return HttpResponseBadRequest("group_size must be an integer")
 
-    #optional quest type filter (WALK/CYCLE/TRANSIT/MIXED)
+    #quest type filter (WALK/CYCLE/TRANSIT/MIXED)
     qtype = (request.GET.get("type") or "").strip().upper()
 
     qs = QuestTemplate.objects.filter(is_active=True)
 
-    #If type is provided, accept that type OR MIXED
+    #if type is provided, accept that type OR MIXED
     if qtype:
         qs = qs.filter(type__in=[qtype, QuestTemplate.QuestType.MIXED])
 
@@ -65,7 +65,7 @@ def shuffle_quest(request):
     if request.user.selected_city is None:
         return HttpResponseBadRequest("selected_city is not set for this user")
 
-    # Use last recommendation criteria by default
+    #use last recommendation criteria by default
     last_id = request.session.get("last_recommended_quest_id")
     group_size = request.session.get("last_recommend_group_size")
     qtype = request.session.get("last_recommend_type") or ""
@@ -105,7 +105,7 @@ def shuffle_quest(request):
         quest = random.choice(candidates_excluding_last)
         shuffled = True
     else:
-        #Only one quest available; return the same one
+        #if there is only one quest available; return the same one
         quest = candidates[0]
         shuffled = False
 
@@ -150,7 +150,7 @@ def start_quest(request):
 
     quest = get_object_or_404(QuestTemplate, pk=quest_id, is_active=True)
 
-    # Optional: enforce group_limits at start time
+    #enforce group_limits at start time
     if not quest.fits_group_size(group_size):
         return JsonResponse(
             {"error": f"group_size {group_size} does not fit quest group_limits {quest.group_limits}"},
@@ -206,13 +206,12 @@ def complete_quest(request):
             status=400,
         )
 
-    # Optional fields
     note = request.POST.get("note", "")
     time_minutes = request.POST.get("time_minutes", "").strip()
     distance_km = request.POST.get("distance_km", "").strip()
     steps = request.POST.get("steps", "").strip()
 
-    # Parse optional numeric fields safely
+    #parsing numeric fields safely
     if time_minutes:
         try:
             run.time_minutes = int(time_minutes)
@@ -221,7 +220,7 @@ def complete_quest(request):
 
     if distance_km:
         try:
-            run.distance_km = distance_km  # DecimalField accepts string
+            run.distance_km = distance_km  #DecimalField accepts string
         except Exception:
             return HttpResponseBadRequest("distance_km must be a number (e.g. 2.50)")
 
