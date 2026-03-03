@@ -10,7 +10,6 @@ class QuestTemplate(models.Model):
         TRANSIT = "TRANSIT", "Public transport"
         MIXED = "MIXED", "Mixed / Any"
 
-    #practical fields so we can actually display a quest card
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True)
 
@@ -61,7 +60,7 @@ class QuestRun(models.Model):
         related_name="quest_runs",
     )
 
-    # Keep the “stats” idea from the ER, but store common stats as columns (easy querying)
+    #keep the “stats” idea from the ER, but store common stats as columns (easy querying)
     group_size = models.PositiveSmallIntegerField()
     started_at = models.DateTimeField(default=timezone.now)
     completed_at = models.DateTimeField(null=True, blank=True)
