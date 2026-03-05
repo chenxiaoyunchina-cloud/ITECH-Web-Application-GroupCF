@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'world',
     'quests',
     'social',
+    'pins',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,13 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/me/city/"
+LOGOUT_REDIRECT_URL = "/login/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+########Used Chat for this integration###################
+NOMINATIM_USER_AGENT = "SideQuestCity/1.0 (University project; contact: dudeabdullah50@gmail.com)"
+NOMINATIM_EMAIL = "dudeabdullah50@gmail.com"  #recommended by Nominatim docs
