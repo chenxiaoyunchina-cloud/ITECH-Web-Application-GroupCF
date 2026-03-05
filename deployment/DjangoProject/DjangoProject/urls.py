@@ -25,6 +25,7 @@ urlpatterns = [
     path("", include("world.urls")),
     path("", include("quests.urls")),
     path("", include("social.urls")),
+    path("", include("pins.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
