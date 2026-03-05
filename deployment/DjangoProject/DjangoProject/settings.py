@@ -11,20 +11,24 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / ".env")
+except Exception:
+    #if python-dotenv is not installed, settings will still work using OS env vars.
+    pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)yr5@d1f$ja_k^9aoswyq6(#*llvi8j%=l2*#*6bc3@n*w2fes'
-
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-insecure-secret-key-change-me")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes", "y", "on")
 ALLOWED_HOSTS = []
 
 
@@ -40,6 +44,8 @@ INSTALLED_APPS = [
     'accounts',
     'world',
     'quests',
+    'social',
+    'pins',
 ]
 
 MIDDLEWARE = [
@@ -123,4 +129,17 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/me/city/"
+LOGOUT_REDIRECT_URL = "/login/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+########Used Chat for this integration###################
+NOMINATIM_USER_AGENT = os.environ.get(
+    "NOMINATIM_USER_AGENT",
+    "SideQuestCity/1.0 (University project)"
+)
+
+NOMINATIM_EMAIL = os.environ.get("NOMINATIM_EMAIL", "")
