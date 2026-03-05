@@ -2,9 +2,11 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth import login, logout
+from django.views.decorators.http import require_http_methods
 
 from world.models import City
-
+from .forms import RegisterForm
 
 @login_required
 def select_city(request):
@@ -46,3 +48,31 @@ def me(request):
         }
     }
     return JsonResponse(data)
+
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # logs them in immediately
+            return redirect("accounts:select_city")
+    else:
+        form = RegisterForm()
+
+    return render(request, "accounts/register.html", {"form": form})
+
+@require_http_methods(["GET", "POST"])
+def logout_view(request):
+    logout(request)
+    return redirect("/login/")
+
+def home(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/")
+
+    if getattr(request.user, "selected_city", None) is None:
+        return redirect("/me/city/")
+
+    #redirect to app landing page once its ready, currectly I used
+    #posts as the redirect link. We will change this once homepage is ready
+    return redirect("/posts/")
