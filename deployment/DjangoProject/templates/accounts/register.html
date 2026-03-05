@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Register</title>
+  </head>
+  <body>
+    <h1>Create an account</h1>
+
+    {% if form.errors %}
+      <div style="color: red;">
+        <p>Please fix the errors below:</p>
+        {{ form.errors }}
+      </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div>
+        <label for="id_username">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div>
+        <label for="id_email">Email</label>
+        {{ form.email }}
+      </div>
+
+      <div>
+        <label for="id_password1">Password</label>
+        {{ form.password1 }}
+      </div>
+
+      <div>
+        <label for="id_password2">Confirm password</label>
+        {{ form.password2 }}
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login/">Login</a></p>
+  </body>
+</html>
