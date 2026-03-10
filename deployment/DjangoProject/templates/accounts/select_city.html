@@ -1,32 +1,56 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Select City</title>
-  </head>
-  <body>
-    <h1>Select your city</h1>
+{% extends "base.html" %}
 
-    <p>
-      Current:
-      <strong>
-        {% if selected_city %}{{ selected_city.name }}{% else %}None{% endif %}
-      </strong>
-    </p>
+{% block title %}Select City{% endblock %}
 
-    <form method="post">
-      {% csrf_token %}
-      <label for="city_id">City:</label>
-      <select name="city_id" id="city_id" required>
-        <option value="" disabled {% if not selected_city %}selected{% endif %}>Choose a city</option>
-        {% for city in cities %}
-          <option value="{{ city.id }}" {% if selected_city and city.id == selected_city.id %}selected{% endif %}>
-            {{ city.name }}
-          </option>
-        {% endfor %}
-      </select>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <section class="page-card p-4 p-md-5">
+            <div class="mb-4">
+                <h1 class="display-6 fw-semibold mb-2">Select your city</h1>
+                <p class="text-muted mb-0">
+                    Choose your current city to personalise local quests and recommendations.
+                </p>
+            </div>
 
-      <button type="submit">Save</button>
-    </form>
-  </body>
-</html>
+            <div class="mb-4">
+                <span class="text-muted">Current city:</span>
+                <strong class="ms-1">
+                    {% if selected_city %}
+                        {{ selected_city.name }}
+                    {% else %}
+                        None selected
+                    {% endif %}
+                </strong>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="city_id" class="form-label fw-semibold">City</label>
+
+                    <select name="city_id" id="city_id" class="form-select" required>
+                        <option value="">Select a city</option>
+
+                        {% for city in cities %}
+                            <option value="{{ city.id }}"
+                                {% if selected_city and city.id == selected_city.id %}selected{% endif %}>
+                                {{ city.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="form-text">
+                        Your selected city will be used to recommend nearby quests.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Save city
+                </button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
