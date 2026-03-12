@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Shuffle Quest | SideQuest City{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <section class="page-card p-4 p-md-5">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <h1 class="display-6 fw-semibold mb-2">Shuffle your quest</h1>
+                    <p class="text-muted mb-0">
+                        Get a recommended city activity and reshuffle it instantly without leaving the page.
+                    </p >
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button id="recommend-btn" class="btn btn-outline-primary">
+                        Recommend quest
+                    </button>
+                    <button id="shuffle-btn" class="btn btn-primary">
+                        Shuffle quest
+                    </button>
+                </div>
+
+                <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    
+                    const recommendBtn = document.getElementById("recommend-btn");
+                    const shuffleBtn = document.getElementById("shuffle-btn");
+                    const startBtn = document.getElementById("start-btn");
+                    
+                    const statusMessage = document.getElementById("status-message");
+                    const title = document.getElementById("quest-title");
+                    const desc = document.getElementById("quest-description");
+                    const type = document.getElementById("quest-type");
+                    const city = document.getElementById("quest-city");
+                    const group = document.getElementById("quest-group");
+                    const duration = document.getElementById("quest-duration");
+                    
+                    let currentQuestId = null;
+                    let currentGroupSize = 1;
+                    
+                    recommendBtn.addEventListener("click", async function () {
+                        statusMessage.innerText = "Loading recommendation...";
+                        
+                        try {
+                            const response = await fetch("/recommend/?group_size=1");
+                            const data = await response.json();
+                            
+                            if (!response.ok) {
+                                statusMessage.innerText = data.error || "Error loading quest";
+                                return;
+                            }
+                            
+                            currentQuestId = data.id;
+                            title.innerText = data.name;
+                            desc.innerText = data.description;
+                            type.innerText = data.type;
+                            city.innerText = data.selected_city || "Unknown";
+                            group.innerText = data.group_limits;
+                            duration.innerText = data.duration + " minutes";
+                            
+                            statusMessage.innerText = "Quest loaded successfully";
+                            startBtn.disabled = false;
+                        
+                        } catch (err) {
+                            statusMessage.innerText = "Server error";
+                        }
+                    });
+                    
+                    shuffleBtn.addEventListener("click", async function () {
+                        statusMessage.innerText = "Shuffling quest...";
+                        
+                        try {
+                            const response = await fetch("/shuffle/");
+                            const data = await response.json();
+                            
+                            if (!response.ok) {
+                                statusMessage.innerText = data.error || "Error shuffling quest";
+                                return;
+                            }
+                            
+                            currentQuestId = data.id;
+                            title.innerText = data.name;
+                            desc.innerText = data.description;
+                            type.innerText = data.type;
+                            city.innerText = data.selected_city || "Unknown";
+                            group.innerText = data.group_limits;
+                            duration.innerText = data.duration + " minutes";
+                            
+                            statusMessage.innerText = "Quest shuffled successfully";
+                            startBtn.disabled = false;
+                        } catch (err) {
+                            statusMessage.innerText = "Server error";
+                        }
+                    });
+                    
+                    startBtn.addEventListener("click", async function () {
+                        if (!currentQuestId) {
+                            statusMessage.innerText = "Please load a quest first";
+                            return;
+                        }
+                        
+                        statusMessage.innerText = "Starting quest...";
+                        
+                        try {
+                            const formData = new FormData();
+                            formData.append("quest_id", currentQuestId);
+                            formData.append("group_size", currentGroupSize);
+                            
+                            const response = await fetch("/start/", {
+                                method: "POST",
+                                body: formData,
+                                headers: {
+                                    "X-CSRFToken": getCookie("csrftoken")
+                                }
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (!response.ok) {
+                                statusMessage.innerText = data.error || "Error starting quest";
+                                return;
+                            }
+                            
+                            statusMessage.innerText = "Quest started successfully. Run ID: " + data.run_id;
+                        } catch (err) {
+                            statusMessage.innerText = "Server error";
+                        }
+                    });
+                    
+                    function getCookie(name) {
+                        const cookies = document.cookie ? document.cookie.split("; ") : [];
+                        for (let cookie of cookies) {
+                            const [key, ...val] = cookie.split("=");
+                            if (key === name) {
+                                return decodeURIComponent(val.join("="));
+                            }
+                        }
+                        return "";
+                    }
+                });
+                </script>
+                
+                <div id="status-message" class="alert alert-light border mb-4">
+                    Select a quest recommendation to begin.
+                </div>
+            </div>
+
+            <div id="status-message" class="alert alert-light border mb-4">
+                Select a quest recommendation to begin.
+            </div>
+
+            <div id="quest-card" class="page-card p-4 border shadow-sm bg-white">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h2 id="quest-title" class="h3 mb-2">No quest loaded yet</h2>
+                        <p id="quest-description" class="text-muted mb-0">
+                            Click “Recommend quest” to load a suggested activity for your selected city.
+                        </p >
+                    </div>
+                    <span id="quest-type" class="badge text-bg-light">N/A</span>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">City</div>
+                            <div id="quest-city" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Group limits</div>
+                            <div id="quest-group" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Duration</div>
+                            <div id="quest-duration" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex flex-wrap gap-2">
+                    <button id="start-btn" class="btn btn-success" disabled>
+                        Start quest
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const recommendBtn = document.getElementById("recommend-btn");
+    const shuffleBtn = document.getElementById("shuffle-btn");
+
+    console.log("Quest JS loaded");
+
+    recommendBtn.addEventListener("click", function () {
+        alert("Recommend button clicked");
+    });
+
+    shuffleBtn.addEventListener("click", function () {
+        alert("Shuffle button clicked");
+    });
+});
+</script>
+{% endblock %}
