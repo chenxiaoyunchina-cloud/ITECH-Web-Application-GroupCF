@@ -18,11 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from quests import views as quest_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
     path("", include("accounts.urls")),
     path("", include("world.urls")),
+
+    path("quest-board/", quest_views.shuffle_page, name="shuffle_page"),
+
     path("", include("quests.urls")),
     path("", include("social.urls")),
     path("", include("pins.urls")),

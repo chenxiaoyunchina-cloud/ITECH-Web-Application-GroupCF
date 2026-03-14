@@ -5,16 +5,14 @@ from django.shortcuts import render
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
 
-from accounts.models import User
 from .services.geocode import search_city_candidates, geocode_city_best_match
 
 
-#Helper -- Used chat for this integration
 def _is_moderator(user) -> bool:
     return getattr(user, "role", None) in ("MODERATOR", "ADMIN") or getattr(user, "is_staff", False)
-##########################################
+
+
 def city_list(request):
     cities = list(
         City.objects.all()
@@ -23,7 +21,7 @@ def city_list(request):
     )
     return JsonResponse(cities, safe=False)
 
-#########Chat section##########
+
 @login_required
 def city_search(request):
     if not _is_moderator(request.user):
@@ -48,9 +46,9 @@ def city_search(request):
         ]
     })
 
+
 @login_required
 def city_add(request):
-    # Restrict to mod/admin so random users cannot add cities
     if not _is_moderator(request.user):
         return JsonResponse({"error": "Forbidden"}, status=403)
 
@@ -61,7 +59,6 @@ def city_add(request):
     if not name:
         return HttpResponseBadRequest("name is required")
 
-    # If UI posts lat/long from the chosen candidate, we do not need to call Nominatim again
     lat_raw = (request.POST.get("lat") or "").strip()
     long_raw = (request.POST.get("long") or "").strip()
 
@@ -72,12 +69,16 @@ def city_add(request):
         lat_raw = best.lat
         long_raw = best.lon
 
-    # Avoid duplicates by name (case-insensitive)
     existing = City.objects.filter(name__iexact=name).first()
     if existing:
         return JsonResponse({
             "created": False,
-            "city": {"id": existing.id, "name": existing.name, "lat": str(existing.lat), "long": str(existing.long)},
+            "city": {
+                "id": existing.id,
+                "name": existing.name,
+                "lat": str(existing.lat),
+                "long": str(existing.long)
+            },
             "message": "City already exists",
         }, status=200)
 
@@ -91,11 +92,22 @@ def city_add(request):
 
     return JsonResponse({
         "created": True,
-        "city": {"id": city.id, "name": city.name, "lat": str(city.lat), "long": str(city.long)},
+        "city": {
+            "id": city.id,
+            "name": city.name,
+            "lat": str(city.lat),
+            "long": str(city.long)
+        },
     }, status=201)
+
 
 @login_required
 def city_manage(request):
     if not _is_moderator(request.user):
         return JsonResponse({"error": "Forbidden"}, status=403)
-    return render(request, "world/city_manage.html")
+
+    cities = City.objects.all().order_by("name")
+
+    return render(request, "world/city_manage.html", {
+        "cities": cities
+    })

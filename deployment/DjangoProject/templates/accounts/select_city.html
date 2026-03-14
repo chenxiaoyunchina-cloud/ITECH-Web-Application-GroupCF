@@ -1,32 +1,154 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Select City</title>
-  </head>
-  <body>
-    <h1>Select your city</h1>
+{% extends "base.html" %}
+{% load static %}
 
-    <p>
-      Current:
-      <strong>
-        {% if selected_city %}{{ selected_city.name }}{% else %}None{% endif %}
-      </strong>
-    </p>
+{% block title %}Choose Your City | SideQuest City{% endblock %}
 
-    <form method="post">
-      {% csrf_token %}
-      <label for="city_id">City:</label>
-      <select name="city_id" id="city_id" required>
-        <option value="" disabled {% if not selected_city %}selected{% endif %}>Choose a city</option>
-        {% for city in cities %}
-          <option value="{{ city.id }}" {% if selected_city and city.id == selected_city.id %}selected{% endif %}>
-            {{ city.name }}
-          </option>
-        {% endfor %}
-      </select>
+{% block content %}
+<div class="city-page">
+    <section class="hero">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-3">Choose Your City</h1>
+            <p class="text-light mx-auto city-subtitle">
+                Select a city to explore and set your group size to get personalised quest recommendations.
+            </p >
+        </div>
+    </section>
 
-      <button type="submit">Save</button>
-    </form>
-  </body>
-</html>
+    <section class="page-card p-4 p-md-4 mb-4">
+        <form method="post" id="city-form">
+            {% csrf_token %}
+
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-7">
+                    <label for="city-search" class="form-label fw-semibold">Search City</label>
+                    <input
+                        type="text"
+                        id="city-search"
+                        class="form-control"
+                        placeholder="Search by city or country..."
+                    >
+                </div>
+
+                <div class="col-lg-5">
+                    <label class="form-label fw-semibold">Group Size</label>
+                    <div class="group-size-bar">
+                        <button type="button" class="group-btn" id="group-minus">−</button>
+                        <div class="group-display">
+                            <span class="group-icon">👥</span>
+                            <span id="group-size-value">1 person</span>
+                        </div>
+                        <button type="button" class="group-btn" id="group-plus">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <input
+                type="hidden"
+                name="city_id"
+                id="selected-city-id"
+                value="{% if selected_city %}{{ selected_city.id }}{% endif %}"
+            >
+            <input
+                type="hidden"
+                name="group_size"
+                id="group-size-input"
+                value="1"
+            >
+
+            <div class="city-grid mt-4" id="city-grid">
+                {% for city in cities %}
+                <div
+                    class="city-card {% if selected_city and city.id == selected_city.id %}selected{% endif %}"
+                    data-city-id="{{ city.id }}"
+                    data-city-name="{{ city.name|lower }}"
+                    style="background-image: url('/static/images/cities/{{ city.name|lower }}.jpg');"
+                >
+                    <div class="city-card-overlay">
+                        <div class="city-card-content">
+                            <div>
+                                <h3 class="city-name">{{ city.name }}</h3>
+                                <p class="city-country">United Kingdom</p >
+                            </div>
+
+                            <div class="city-meta">
+                                <span>📍 {{ forloop.counter|add:30 }} quests</span>
+                                <span>👥 {{ forloop.counter|add:800 }} explorers</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No cities available.</p >
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">
+                    Save city
+                </button>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".city-card");
+    const selectedCityInput = document.getElementById("selected-city-id");
+    const searchInput = document.getElementById("city-search");
+
+    const minusBtn = document.getElementById("group-minus");
+    const plusBtn = document.getElementById("group-plus");
+    const groupValue = document.getElementById("group-size-value");
+    const groupInput = document.getElementById("group-size-input");
+
+    let groupSize = 1;
+
+    function updateGroupDisplay() {
+        groupValue.textContent = groupSize === 1 ? "1 person" : `${groupSize} people`;
+        groupInput.value = groupSize;
+    }
+
+    if (minusBtn) {
+        minusBtn.addEventListener("click", function () {
+            if (groupSize > 1) {
+                groupSize -= 1;
+                updateGroupDisplay();
+            }
+        });
+    }
+
+    if (plusBtn) {
+        plusBtn.addEventListener("click", function () {
+            if (groupSize < 10) {
+                groupSize += 1;
+                updateGroupDisplay();
+            }
+        });
+    }
+
+    cards.forEach(card => {
+        card.addEventListener("click", function () {
+            cards.forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+            selectedCityInput.value = card.dataset.cityId;
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            const keyword = searchInput.value.trim().toLowerCase();
+
+            cards.forEach(card => {
+                const cityName = card.dataset.cityName;
+                card.style.display = cityName.includes(keyword) ? "" : "none";
+            });
+        });
+    }
+
+    updateGroupDisplay();
+});
+</script>
+{% endblock %}

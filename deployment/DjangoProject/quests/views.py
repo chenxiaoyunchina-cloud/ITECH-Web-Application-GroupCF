@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
 from .models import QuestTemplate, QuestRun
@@ -252,3 +252,10 @@ def complete_quest(request):
             "proof_file": run.proof_file.url if run.proof_file else None,
         }
     )
+
+@login_required
+def shuffle_page(request):
+    """
+    Render the HTML page that allows users to recommend and shuffle quests.
+    """
+    return render(request, "quests/shuffle.html")
