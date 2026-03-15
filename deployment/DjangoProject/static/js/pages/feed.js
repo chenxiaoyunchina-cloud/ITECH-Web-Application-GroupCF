@@ -36,6 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let total = 0;
     let isLoading = false;
 
+    const reactionMeta = {
+        LIKE: { emoji: "👍", label: "Like" },
+        LOVE: { emoji: "❤️", label: "Love" },
+        WOW: { emoji: "😮", label: "Wow" },
+    };
+
     function buildUrlFromTemplate(template, postId) {
         return template.replace("/0/", `/${postId}/`);
     }
@@ -52,11 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function formatReactionLabel(type, counts, myReaction) {
         const count = counts && counts[type] ? counts[type] : 0;
         const isActive = myReaction === type;
-        const labels = {
-            LIKE: "Like",
-            LOVE: "Love",
-            WOW: "Wow",
-        };
+        const meta = reactionMeta[type] || { emoji: "❔", label: type };
 
         return `
             <button
@@ -64,8 +66,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 class="feed-reaction-btn ${isActive ? "active" : ""}"
                 data-post-id="${counts.__postId}"
                 data-reaction-type="${type}"
+                title="${meta.label}"
+                aria-label="${meta.label} reaction, ${count} total"
             >
-                ${labels[type]} (${count})
+                ${meta.emoji} ${count}
             </button>
         `;
     }
@@ -318,13 +322,11 @@ document.addEventListener("DOMContentLoaded", function () {
             buttons.forEach(function (button) {
                 const type = button.dataset.reactionType;
                 const count = data.counts && data.counts[type] ? data.counts[type] : 0;
-                const labels = {
-                    LIKE: "Like",
-                    LOVE: "Love",
-                    WOW: "Wow",
-                };
+                const meta = reactionMeta[type] || { emoji: "❔", label: type };
 
-                button.textContent = `${labels[type]} (${count})`;
+                button.textContent = `${meta.emoji} ${count}`;
+                button.title = meta.label;
+                button.setAttribute("aria-label", `${meta.label} reaction, ${count} total`);
                 button.classList.toggle("active", data.my_reaction === type);
             });
         } catch (error) {
