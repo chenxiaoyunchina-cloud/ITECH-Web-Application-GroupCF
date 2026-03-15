@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Quest | SideQuest City{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <section class="page-card p-4 p-md-5">
+            <div class="mb-4">
+                <h1 class="display-6 fw-semibold mb-2">Complete your quest</h1>
+                <p class="text-muted mb-0">
+                    Submit your final result and upload proof for this quest.
+                </p >
+            </div>
+
+            <div class="page-card p-4 border shadow-sm bg-white mb-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h2 id="complete-quest-title" class="h3 mb-2">No active quest</h2>
+                        <p id="complete-quest-description" class="text-muted mb-0">
+                            Start a quest from the quest board first.
+                        </p >
+                    </div>
+                    <span id="complete-quest-type" class="badge text-bg-light">N/A</span>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">City</div>
+                            <div id="complete-quest-city" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Group limits</div>
+                            <div id="complete-quest-group-limits" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Duration</div>
+                            <div id="complete-quest-duration" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="complete-quest-form" class="page-card p-4 border shadow-sm bg-white">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="time-minutes" class="form-label">Time spent (minutes)</label>
+                        <input type="number" id="time-minutes" class="form-control" min="0" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="distance-km" class="form-label">Distance (km)</label>
+                        <input type="number" id="distance-km" class="form-control" min="0" step="0.01">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="steps" class="form-label">Steps</label>
+                        <input type="number" id="steps" class="form-control" min="0">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label for="completion-note" class="form-label">Completion note</label>
+                    <textarea id="completion-note" class="form-control" rows="4" placeholder="Describe your experience or the result..."></textarea>
+                </div>
+
+                <div class="mt-4">
+                    <label for="proof-file" class="form-label">Upload proof</label>
+                    <input type="file" id="proof-file" class="form-control" accept="image/*,.pdf">
+                    <div class="form-text">
+                        You can upload an image or PDF as proof of completion.
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Submit completion
+                    </button>
+                    <a href=" " class="btn btn-outline-secondary">
+                        Back to progress
+                    </a >
+                </div>
+            </form>
+
+            <div id="complete-message" class="alert alert-light border mt-4 mb-0">
+                When submitted, your final quest result will be sent to the backend.
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const activeQuest = JSON.parse(localStorage.getItem("activeQuest") || "null");
+    const savedProgress = JSON.parse(localStorage.getItem("questProgress") || "null");
+
+    const titleEl = document.getElementById("complete-quest-title");
+    const descEl = document.getElementById("complete-quest-description");
+    const typeEl = document.getElementById("complete-quest-type");
+    const cityEl = document.getElementById("complete-quest-city");
+    const limitsEl = document.getElementById("complete-quest-group-limits");
+    const durationEl = document.getElementById("complete-quest-duration");
+
+    const timeEl = document.getElementById("time-minutes");
+    const distanceEl = document.getElementById("distance-km");
+    const stepsEl = document.getElementById("steps");
+    const noteEl = document.getElementById("completion-note");
+    const proofEl = document.getElementById("proof-file");
+    const formEl = document.getElementById("complete-quest-form");
+    const messageEl = document.getElementById("complete-message");
+
+    if (activeQuest) {
+        titleEl.textContent = activeQuest.name || "Current quest";
+        descEl.textContent = activeQuest.description || "Quest loaded.";
+        typeEl.textContent = activeQuest.type || "N/A";
+        cityEl.textContent = activeQuest.selected_city || "—";
+        limitsEl.textContent = activeQuest.group_limits || "—";
+        durationEl.textContent = activeQuest.duration ? `${activeQuest.duration} minutes` : "—";
+    }
+
+    if (savedProgress) {
+        timeEl.value = savedProgress.time_minutes || "";
+        distanceEl.value = savedProgress.distance_km || "";
+        stepsEl.value = savedProgress.steps || "";
+        noteEl.value = savedProgress.note || "";
+    }
+
+    formEl.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!activeQuest || !activeQuest.run_id) {
+            messageEl.className = "alert alert-danger mt-4 mb-0";
+            messageEl.textContent = "No active quest run found. Start a quest first.";
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append("run_id", activeQuest.run_id);
+        fd.append("time_minutes", timeEl.value || "");
+        fd.append("distance_km", distanceEl.value || "");
+        fd.append("steps", stepsEl.value || "");
+        fd.append("note", noteEl.value || "");
+
+        if (proofEl.files.length > 0) {
+            fd.append("proof_file", proofEl.files[0]);
+        }
+
+        try {
+            const response = await fetch("/complete/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: fd,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                messageEl.className = "alert alert-danger mt-4 mb-0";
+                messageEl.textContent = data.error || "Failed to complete quest.";
+                return;
+            }
+
+            messageEl.className = "alert alert-success mt-4 mb-0";
+            messageEl.textContent = "Quest completed successfully.";
+
+            localStorage.removeItem("questProgress");
+            localStorage.removeItem("activeQuest");
+        } catch (error) {
+            messageEl.className = "alert alert-danger mt-4 mb-0";
+            messageEl.textContent = "Unexpected error while submitting quest completion.";
+        }
+    });
+});
+</script>
+{% endblock %}

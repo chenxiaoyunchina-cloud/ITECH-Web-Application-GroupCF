@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Quest Progress | SideQuest City{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <section class="page-card p-4 p-md-5">
+            <div class="mb-4">
+                <h1 class="display-6 fw-semibold mb-2">Quest progress</h1>
+                <p class="text-muted mb-0">
+                    Track your quest locally while you complete the activity.
+                </p >
+            </div>
+
+            <div class="page-card p-4 border shadow-sm bg-white mb-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h2 id="quest-title" class="h3 mb-2">No active quest</h2>
+                        <p id="quest-description" class="text-muted mb-0">
+                            Start a quest from the shuffle page first.
+                        </p >
+                    </div>
+                    <span id="quest-type" class="badge text-bg-light">N/A</span>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">City</div>
+                            <div id="quest-city" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Group limits</div>
+                            <div id="quest-group-limits" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-muted mb-1">Duration</div>
+                            <div id="quest-duration" class="fw-semibold">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-card p-4 border shadow-sm bg-white mb-4">
+                <h3 class="h5 mb-3">Live progress</h3>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="elapsed-minutes" class="form-label">Elapsed minutes</label>
+                        <input type="number" id="elapsed-minutes" class="form-control" min="0" value="0">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="progress-steps" class="form-label">Steps</label>
+                        <input type="number" id="progress-steps" class="form-control" min="0" value="0">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="progress-distance" class="form-label">Distance (km)</label>
+                        <input type="number" id="progress-distance" class="form-control" min="0" step="0.01" value="0">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="form-label">Checklist</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input progress-check" type="checkbox" id="check-1">
+                        <label class="form-check-label" for="check-1">
+                            Reached the quest location
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input progress-check" type="checkbox" id="check-2">
+                        <label class="form-check-label" for="check-2">
+                            Collected proof or evidence
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input progress-check" type="checkbox" id="check-3">
+                        <label class="form-check-label" for="check-3">
+                            Finished the quest activity
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label for="progress-note" class="form-label">Progress note</label>
+                    <textarea id="progress-note" class="form-control" rows="3" placeholder="Write notes while doing the quest..."></textarea>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button id="save-progress-btn" type="button" class="btn btn-outline-primary">
+                    Save progress
+                </button>
+                <a href=" " class="btn btn-primary">
+                    Finish quest
+                </a >
+            </div>
+
+            <div id="progress-message" class="alert alert-light border mt-4 mb-0">
+                Progress is stored locally in your browser until you submit completion.
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const activeQuest = JSON.parse(localStorage.getItem("activeQuest") || "null");
+    const savedProgress = JSON.parse(localStorage.getItem("questProgress") || "null");
+
+    const titleEl = document.getElementById("quest-title");
+    const descEl = document.getElementById("quest-description");
+    const typeEl = document.getElementById("quest-type");
+    const cityEl = document.getElementById("quest-city");
+    const limitsEl = document.getElementById("quest-group-limits");
+    const durationEl = document.getElementById("quest-duration");
+
+    const elapsedEl = document.getElementById("elapsed-minutes");
+    const stepsEl = document.getElementById("progress-steps");
+    const distanceEl = document.getElementById("progress-distance");
+    const noteEl = document.getElementById("progress-note");
+    const checkboxes = document.querySelectorAll(".progress-check");
+    const saveBtn = document.getElementById("save-progress-btn");
+    const messageEl = document.getElementById("progress-message");
+
+    if (activeQuest) {
+        titleEl.textContent = activeQuest.name || "Current quest";
+        descEl.textContent = activeQuest.description || "Quest loaded.";
+        typeEl.textContent = activeQuest.type || "N/A";
+        cityEl.textContent = activeQuest.selected_city || "—";
+        limitsEl.textContent = activeQuest.group_limits || "—";
+        durationEl.textContent = activeQuest.duration ? `${activeQuest.duration} minutes` : "—";
+    }
+
+    if (savedProgress) {
+        elapsedEl.value = savedProgress.time_minutes || 0;
+        stepsEl.value = savedProgress.steps || 0;
+        distanceEl.value = savedProgress.distance_km || 0;
+        noteEl.value = savedProgress.note || "";
+
+        if (Array.isArray(savedProgress.checklist)) {
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.checked = !!savedProgress.checklist[index];
+            });
+        }
+    }
+
+    saveBtn.addEventListener("click", function () {
+        const progressData = {
+            time_minutes: elapsedEl.value,
+            steps: stepsEl.value,
+            distance_km: distanceEl.value,
+            note: noteEl.value,
+            checklist: Array.from(checkboxes).map(cb => cb.checked),
+        };
+
+        localStorage.setItem("questProgress", JSON.stringify(progressData));
+        messageEl.className = "alert alert-success mt-4 mb-0";
+        messageEl.textContent = "Progress saved locally.";
+    });
+});
+</script>
+{% endblock %}
