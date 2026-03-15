@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     group_size: currentGroupSize,
                 };
 
+                localStorage.removeItem("questProgress");
                 localStorage.setItem("activeQuest", JSON.stringify(activeQuest));
 
                 setStatus(`Quest started successfully. Run ID: ${data.run_id}`, "success");

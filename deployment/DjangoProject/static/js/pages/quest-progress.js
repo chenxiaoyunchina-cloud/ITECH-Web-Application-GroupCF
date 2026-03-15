@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getProgressData() {
         return {
+            run_id: activeQuest ? activeQuest.run_id : null,
             time_minutes: elapsedEl.value || 0,
             steps: stepsEl.value || 0,
             distance_km: distanceEl.value || 0,
@@ -60,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
         setMessage("No active quest found. Please start one from the shuffle page.", "warning");
     }
 
-    if (savedProgress) {
+    if (savedProgress && activeQuest && savedProgress.run_id &&
+        savedProgress.run_id === activeQuest.run_id) {
         elapsedEl.value = savedProgress.time_minutes || 0;
         stepsEl.value = savedProgress.steps || 0;
         distanceEl.value = savedProgress.distance_km || 0;
