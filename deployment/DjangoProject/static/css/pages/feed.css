@@ -106,23 +106,49 @@
 .feed-reaction-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
 }
 
 .feed-reaction-btn {
     border: 1px solid var(--border);
     background: white;
     border-radius: 999px;
-    padding: 0.45rem 0.85rem;
-    font-size: 0.9rem;
+    padding: 0.5rem 0.9rem;
+    min-width: 64px;
+    font-size: 1rem;
+    line-height: 1;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .feed-reaction-btn.active {
     border-color: var(--primary);
-    background: rgba(91, 61, 245, 0.08);
+    background: rgba(91, 61, 245, 0.1);
     color: var(--primary);
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: 0 0 0 3px rgba(91, 61, 245, 0.12);
+}
+
+.feed-reaction-btn:hover {
+    transform: translateY(-1px);
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.feed-reaction-btn:focus {
+    outline: 3px solid rgba(47, 128, 237, 0.18);
+    box-shadow: none;
+}
+
+.feed-reaction-btn:active {
+    transform: scale(0.97);
+}
+
+.feed-reaction-btn.active:hover {
+    background: rgba(91, 61, 245, 0.14);
 }
 
 .feed-comments-wrap {
