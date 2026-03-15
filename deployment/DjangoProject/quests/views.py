@@ -259,3 +259,12 @@ def shuffle_page(request):
     Render the HTML page that allows users to recommend and shuffle quests.
     """
     return render(request, "quests/shuffle.html")
+
+@login_required
+def quest_progress_page(request):
+    return render(request, "quests/progress.html")
+
+
+@login_required
+def quest_complete_page(request):
+    return render(request, "quests/complete.html")

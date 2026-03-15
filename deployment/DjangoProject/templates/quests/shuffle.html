@@ -15,136 +15,12 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button id="recommend-btn" class="btn btn-outline-primary">
+                    <button id="recommend-btn" type="button" class="btn btn-outline-primary">
                         Recommend quest
                     </button>
-                    <button id="shuffle-btn" class="btn btn-primary">
+                    <button id="shuffle-btn" type="button" class="btn btn-primary">
                         Shuffle quest
                     </button>
-                </div>
-
-                <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    
-                    const recommendBtn = document.getElementById("recommend-btn");
-                    const shuffleBtn = document.getElementById("shuffle-btn");
-                    const startBtn = document.getElementById("start-btn");
-                    
-                    const statusMessage = document.getElementById("status-message");
-                    const title = document.getElementById("quest-title");
-                    const desc = document.getElementById("quest-description");
-                    const type = document.getElementById("quest-type");
-                    const city = document.getElementById("quest-city");
-                    const group = document.getElementById("quest-group");
-                    const duration = document.getElementById("quest-duration");
-                    
-                    let currentQuestId = null;
-                    let currentGroupSize = 1;
-                    
-                    recommendBtn.addEventListener("click", async function () {
-                        statusMessage.innerText = "Loading recommendation...";
-                        
-                        try {
-                            const response = await fetch("/recommend/?group_size=1");
-                            const data = await response.json();
-                            
-                            if (!response.ok) {
-                                statusMessage.innerText = data.error || "Error loading quest";
-                                return;
-                            }
-                            
-                            currentQuestId = data.id;
-                            title.innerText = data.name;
-                            desc.innerText = data.description;
-                            type.innerText = data.type;
-                            city.innerText = data.selected_city || "Unknown";
-                            group.innerText = data.group_limits;
-                            duration.innerText = data.duration + " minutes";
-                            
-                            statusMessage.innerText = "Quest loaded successfully";
-                            startBtn.disabled = false;
-                        
-                        } catch (err) {
-                            statusMessage.innerText = "Server error";
-                        }
-                    });
-                    
-                    shuffleBtn.addEventListener("click", async function () {
-                        statusMessage.innerText = "Shuffling quest...";
-                        
-                        try {
-                            const response = await fetch("/shuffle/");
-                            const data = await response.json();
-                            
-                            if (!response.ok) {
-                                statusMessage.innerText = data.error || "Error shuffling quest";
-                                return;
-                            }
-                            
-                            currentQuestId = data.id;
-                            title.innerText = data.name;
-                            desc.innerText = data.description;
-                            type.innerText = data.type;
-                            city.innerText = data.selected_city || "Unknown";
-                            group.innerText = data.group_limits;
-                            duration.innerText = data.duration + " minutes";
-                            
-                            statusMessage.innerText = "Quest shuffled successfully";
-                            startBtn.disabled = false;
-                        } catch (err) {
-                            statusMessage.innerText = "Server error";
-                        }
-                    });
-                    
-                    startBtn.addEventListener("click", async function () {
-                        if (!currentQuestId) {
-                            statusMessage.innerText = "Please load a quest first";
-                            return;
-                        }
-                        
-                        statusMessage.innerText = "Starting quest...";
-                        
-                        try {
-                            const formData = new FormData();
-                            formData.append("quest_id", currentQuestId);
-                            formData.append("group_size", currentGroupSize);
-                            
-                            const response = await fetch("/start/", {
-                                method: "POST",
-                                body: formData,
-                                headers: {
-                                    "X-CSRFToken": getCookie("csrftoken")
-                                }
-                            });
-                            
-                            const data = await response.json();
-                            
-                            if (!response.ok) {
-                                statusMessage.innerText = data.error || "Error starting quest";
-                                return;
-                            }
-                            
-                            statusMessage.innerText = "Quest started successfully. Run ID: " + data.run_id;
-                        } catch (err) {
-                            statusMessage.innerText = "Server error";
-                        }
-                    });
-                    
-                    function getCookie(name) {
-                        const cookies = document.cookie ? document.cookie.split("; ") : [];
-                        for (let cookie of cookies) {
-                            const [key, ...val] = cookie.split("=");
-                            if (key === name) {
-                                return decodeURIComponent(val.join("="));
-                            }
-                        }
-                        return "";
-                    }
-                });
-                </script>
-                
-                <div id="status-message" class="alert alert-light border mb-4">
-                    Select a quest recommendation to begin.
                 </div>
             </div>
 
@@ -170,12 +46,14 @@
                             <div id="quest-city" class="fw-semibold">—</div>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="border rounded-3 p-3 h-100">
                             <div class="small text-muted mb-1">Group limits</div>
-                            <div id="quest-group" class="fw-semibold">—</div>
+                            <div id="quest-group-limits" class="fw-semibold">—</div>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="border rounded-3 p-3 h-100">
                             <div class="small text-muted mb-1">Duration</div>
@@ -185,9 +63,12 @@
                 </div>
 
                 <div class="mt-4 d-flex flex-wrap gap-2">
-                    <button id="start-btn" class="btn btn-success" disabled>
+                    <button id="start-btn" type="button" class="btn btn-success">
                         Start quest
                     </button>
+                    <a href="{% url 'quests:quest_progress_page' %}" class="btn btn-outline-secondary">
+                        View progress page
+                    </a >
                 </div>
             </div>
         </section>
@@ -197,18 +78,127 @@
 
 {% block extra_js %}
 <script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const recommendBtn = document.getElementById("recommend-btn");
     const shuffleBtn = document.getElementById("shuffle-btn");
+    const startBtn = document.getElementById("start-btn");
 
-    console.log("Quest JS loaded");
+    const statusMessage = document.getElementById("status-message");
+    const titleEl = document.getElementById("quest-title");
+    const descEl = document.getElementById("quest-description");
+    const typeEl = document.getElementById("quest-type");
+    const cityEl = document.getElementById("quest-city");
+    const groupLimitsEl = document.getElementById("quest-group-limits");
+    const durationEl = document.getElementById("quest-duration");
+
+    let currentQuest = null;
+    let currentGroupSize = 1;
+
+    function renderQuest(quest) {
+        currentQuest = quest;
+
+        titleEl.textContent = quest.name || "Unnamed quest";
+        descEl.textContent = quest.description || "No description available.";
+        typeEl.textContent = quest.type || "N/A";
+        cityEl.textContent = quest.selected_city || "—";
+        groupLimitsEl.textContent = quest.group_limits || "—";
+        durationEl.textContent = quest.duration ? `${quest.duration} minutes` : "—";
+    }
+
+    async function loadQuest(url, successMessage) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!response.ok) {
+                statusMessage.className = "alert alert-danger border mb-4";
+                statusMessage.textContent = data.error || "Unable to load quest.";
+                return;
+            }
+
+            renderQuest(data);
+            statusMessage.className = "alert alert-success border mb-4";
+            statusMessage.textContent = successMessage;
+        } catch (error) {
+            statusMessage.className = "alert alert-danger border mb-4";
+            statusMessage.textContent = "Unexpected error while loading quest.";
+        }
+    }
 
     recommendBtn.addEventListener("click", function () {
-        alert("Recommend button clicked");
+        loadQuest(`/recommend/?group_size=${currentGroupSize}`, "Quest recommended successfully.");
     });
 
     shuffleBtn.addEventListener("click", function () {
-        alert("Shuffle button clicked");
+        loadQuest(`/shuffle/?group_size=${currentGroupSize}`, "Quest shuffled successfully.");
+    });
+
+    startBtn.addEventListener("click", async function () {
+        if (!currentQuest || !currentQuest.id) {
+            statusMessage.className = "alert alert-warning border mb-4";
+            statusMessage.textContent = "Please load a quest first before starting.";
+            return;
+        }
+
+        try {
+            const response = await fetch("/start/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    quest_id: currentQuest.id,
+                    group_size: currentGroupSize,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                statusMessage.className = "alert alert-danger border mb-4";
+                statusMessage.textContent = data.error || "Unable to start quest.";
+                return;
+            }
+
+            const activeQuest = {
+                run_id: data.run_id,
+                id: data.quest.id,
+                name: data.quest.name,
+                type: data.quest.type,
+                duration: data.quest.duration,
+                selected_city: data.city.name,
+                group_limits: currentQuest.group_limits,
+                description: currentQuest.description,
+                started_at: data.started_at,
+                status: data.status,
+            };
+
+            localStorage.setItem("activeQuest", JSON.stringify(activeQuest));
+
+            statusMessage.className = "alert alert-success border mb-4";
+            statusMessage.textContent = `Quest started successfully. Run ID: ${data.run_id}`;
+
+            window.location.href = "{% url 'quests:quest_progress_page' %}";
+        } catch (error) {
+            statusMessage.className = "alert alert-danger border mb-4";
+            statusMessage.textContent = "Unexpected error while starting quest.";
+        }
     });
 });
 </script>
