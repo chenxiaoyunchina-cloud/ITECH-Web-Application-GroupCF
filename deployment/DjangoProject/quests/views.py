@@ -2,7 +2,7 @@ import random
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .models import QuestTemplate, QuestRun
@@ -255,10 +255,16 @@ def complete_quest(request):
 
 @login_required
 def shuffle_page(request):
-    """
-    Render the HTML page that allows users to recommend and shuffle quests.
-    """
-    return render(request, "quests/shuffle.html")
+    if request.user.selected_city is None:
+        return redirect("accounts:select_city")
+
+    return render(
+        request,
+        "quests/shuffle.html",
+        {
+            "selected_group_size": request.session.get("group_size", 1),
+        },
+    )
 
 @login_required
 def quest_progress_page(request):
