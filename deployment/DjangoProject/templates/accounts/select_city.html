@@ -3,6 +3,10 @@
 
 {% block title %}Choose Your City | SideQuest City{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/city.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="city-page">
     <section class="hero">
@@ -10,7 +14,7 @@
             <h1 class="display-5 fw-bold mb-3">Choose Your City</h1>
             <p class="text-light mx-auto city-subtitle">
                 Select a city to explore and set your group size to get personalised quest recommendations.
-            </p >
+            </p>
         </div>
     </section>
 
@@ -67,7 +71,7 @@
                         <div class="city-card-content">
                             <div>
                                 <h3 class="city-name">{{ city.name }}</h3>
-                                <p class="city-country">United Kingdom</p >
+                                <p class="city-country">United Kingdom</p>
                             </div>
 
                             <div class="city-meta">
@@ -78,7 +82,7 @@
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-muted">No cities available.</p >
+                <p class="text-muted">No cities available.</p>
                 {% endfor %}
             </div>
 

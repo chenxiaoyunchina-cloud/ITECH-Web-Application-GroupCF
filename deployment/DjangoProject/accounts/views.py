@@ -73,6 +73,4 @@ def home(request):
     if getattr(request.user, "selected_city", None) is None:
         return redirect("/me/city/")
 
-    #redirect to app landing page once its ready, currectly I used
-    #posts as the redirect link. We will change this once homepage is ready
-    return redirect("/posts/")
+    return redirect("quests:shuffle_page")
