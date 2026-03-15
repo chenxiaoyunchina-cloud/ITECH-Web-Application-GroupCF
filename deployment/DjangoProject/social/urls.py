@@ -4,6 +4,7 @@ from . import views
 app_name = "social"
 
 urlpatterns = [
+    path("community/", views.feed_page, name="feed_page"),
     path("posts/", views.post_feed, name="post_feed"),
     path("posts/publish/", views.publish_post, name="publish_post"),
     path("posts/<int:post_id>/comments/", views.post_comments, name="post_comments"),

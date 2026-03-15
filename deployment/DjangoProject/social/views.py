@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest, JsonResponse
-from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 
 from quests.models import QuestRun
 from .models import Post, Comment, Reaction
@@ -11,7 +11,12 @@ from .models import Post, Comment, Reaction
 def _is_moderator(user) -> bool:
     #custom user has a role field; treat MODERATOR/ADMIN as elevated.
     return getattr(user, "role", None) in ("MODERATOR", "ADMIN") or getattr(user, "is_staff", False)
+@login_required
+def feed_page(request):
+    if request.user.selected_city is None:
+        return redirect("accounts:select_city")
 
+    return render(request, "social/feed.html")
 @login_required
 def publish_post(request):
     if request.method != "POST":
