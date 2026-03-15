@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,209 +8,55 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background: #f5f7fb;
-        }
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
 
-        .app-container {
-            max-width: 1100px;
-        }
-
-        .page-card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid #e4e7eb;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            min-height: 45px;
-        }
-
-        .btn {
-            border-radius: 10px;
-        }
-
-        .form-control:focus,
-        .form-select:focus,
-        .btn:focus {
-            outline: 3px solid rgba(13,110,253,.25);
-            box-shadow: none;
-        }
-
-        .city-page {
-            padding-top: 12px;
-        }
-        
-        .city-subtitle {
-            max-width: 720px;
-            font-size: 1.05rem;
-        }
-        
-        .group-size-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .group-btn {
-            width: 42px;
-            height: 42px;
-            border: 1px solid #d9dce3;
-            background: white;
-            border-radius: 10px;
-            font-size: 1.3rem;
-            line-height: 1;
-        }
-        
-        .group-display {
-            flex: 1;
-            min-height: 42px;
-            border: 1px solid #d9dce3;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: #f8fafc;
-            font-weight: 500;
-        }
-        
-        .group-icon {
-            font-size: 0.95rem;
-        }
-        
-        .city-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 20px;
-        }
-       
-        .city-card {
-            position: relative;
-            height: 220px;
-            border-radius: 18px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-        }
-        
-        .city-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
-        }
-        
-        .city-card.selected {
-            border-color: #60d394;
-            box-shadow: 0 0 0 4px rgba(96, 211, 148, 0.22);
-        }
-        
-        .city-card-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: flex-end;
-            padding: 18px;
-            background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0.22) 45%, rgba(0,0,0,0.05));
-        }
-        
-        .city-card-content {
-            width: 100%;
-            color: white;
-        }
-        
-        .city-name {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .city-country {
-            margin: 2px 0 14px;
-            font-size: 0.95rem;
-            opacity: 0.92;
-        }
-        
-        .city-meta {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 0.88rem;
-            opacity: 0.96;
-            flex-wrap: wrap;
-        }
-        
-        @media (max-width: 991px) {
-            .city-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-        
-        @media (max-width: 575px) {
-            .city-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .city-card {
-                height: 200px;
-            }
-        }
-
-        .hero {
-            background: linear-gradient(135deg, #4c1d95, #1e3a8a);
-            padding: 80px 0;
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 40px;
-        }
-
-    </style>
-
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
     <div class="container app-container">
-
-        <a class="navbar-brand" href=" ">SideQuest City</a >
+        <a class="navbar-brand fw-bold" href="{% url 'accounts:home' %}">
             SideQuest City
-        </a >
+        </a>
 
-        <div class="navbar-nav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <a class="nav-link" href=" ">Home</a >
-                Home
-            </a>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <div class="navbar-nav me-auto">
+                <a class="nav-link" href="{% url 'accounts:home' %}">Home</a>
+                <a class="nav-link" href="{% url 'accounts:select_city' %}">Cities</a>
+                <a class="nav-link" href="{% url 'quests:shuffle_page' %}">Shuffle Quest</a>
+            </div>
 
-            <a class="nav-link" href="/me/city/">
-                Cities
-            </a >
+            <div class="d-flex align-items-center gap-2">
+                {% if request.user.is_authenticated and request.user.selected_city %}
+                    <span class="city-badge">
+                        {{ request.user.selected_city.name }}
+                    </span>
+                {% endif %}
 
-            <a class="nav-link" href="{% url 'quests:shuffle_page' %}">
-                Shuffle Quest
-            </a >
-
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
-
     </div>
 </nav>
 
-<main class="container app-container mt-4">
-
-    {% block content %}
-    {% endblock %}
-
+<main class="container app-container py-4">
+    {% block content %}{% endblock %}
 </main>
 
-{% block extra_js %}
-{% endblock %}
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+.page-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--radius-sm);
+    min-height: 45px;
+}
+
+.btn {
+    border-radius: var(--radius-sm);
+}
+
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    outline: 3px solid rgba(47, 128, 237, 0.2);
+    box-shadow: none;
+}

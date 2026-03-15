@@ -1,0 +1,47 @@
+:root {
+    --bg-page: #f5f7fb;
+    --bg-surface: #ffffff;
+    --bg-dark: #0f172a;
+
+    --primary: #5b3df5;
+    --secondary: #2f80ed;
+    --accent: #60d394;
+    --warm: #f2c6a0;
+
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #f8fafc;
+
+    --border: #e4e7eb;
+
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 10px;
+
+    --shadow-soft: 0 10px 20px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+body {
+    background: var(--bg-page);
+    color: var(--text-main);
+}
+
+.app-container {
+    max-width: 1100px;
+}
+
+.app-navbar {
+    background: linear-gradient(90deg, #111827, #1e293b);
+}
+
+.city-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(96, 211, 148, 0.15);
+    color: #d1fae5;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
