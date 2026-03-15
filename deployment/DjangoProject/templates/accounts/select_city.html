@@ -56,7 +56,7 @@
                 type="hidden"
                 name="group_size"
                 id="group-size-input"
-                value="1"
+                value="{{ selected_group_size|default:1 }}"
             >
 
             <div class="city-grid mt-4" id="city-grid">
@@ -108,7 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const groupValue = document.getElementById("group-size-value");
     const groupInput = document.getElementById("group-size-input");
 
-    let groupSize = 1;
+    let groupSize = parseInt(groupInput.value || "1", 10);
+    if (isNaN(groupSize) || groupSize < 1) {
+        groupSize = 1;
+    }
+    if (groupSize > 10) {
+        groupSize = 10;
+    }
 
     function updateGroupDisplay() {
         groupValue.textContent = groupSize === 1 ? "1 person" : `${groupSize} people`;
