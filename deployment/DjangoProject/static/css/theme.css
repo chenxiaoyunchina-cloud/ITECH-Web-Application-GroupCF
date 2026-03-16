@@ -1,8 +1,8 @@
 :root {
-    --bg-page: #eef3fb;
-    --bg-page-soft: #f6f8fd;
-    --bg-surface: #ffffff;
-    --bg-surface-soft: #fbfdff;
+    --bg-page: #111827;
+    --bg-page-soft: #182235;
+    --bg-surface: rgba(255, 255, 255, 0.94);
+    --bg-surface-soft: rgba(251, 253, 255, 0.96);
     --bg-paper: #fffef8;
     --bg-dark: #18233c;
     --bg-dark-soft: #24314f;
@@ -33,10 +33,10 @@
     --radius-sm: 10px;
     --radius-pill: 999px;
 
-    --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
-    --shadow-card: 0 12px 28px rgba(15, 23, 42, 0.08);
-    --shadow-nav: 0 10px 24px rgba(15, 23, 42, 0.14);
-    --shadow-panel: 0 12px 24px rgba(15, 23, 42, 0.12);
+    --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.10);
+    --shadow-card: 0 12px 28px rgba(15, 23, 42, 0.16);
+    --shadow-nav: 0 10px 24px rgba(15, 23, 42, 0.22);
+    --shadow-panel: 0 12px 24px rgba(15, 23, 42, 0.20);
 
     --max-width: 1160px;
 }
@@ -48,27 +48,33 @@ html {
 body {
     min-height: 100vh;
     background:
-        linear-gradient(180deg, #f2f6fd 0%, #e8eef8 58%, #dde7f5 100%);
+        linear-gradient(180deg, rgba(15, 20, 36, 0.80), rgba(21, 28, 47, 0.84)),
+        url("/static/images/home/pixel-bg-night-tile.png");
+    background-repeat: repeat;
+    background-size: 280px 280px;
+    background-position: top left;
     color: var(--text-main);
     position: relative;
     overflow-x: hidden;
     font-family: "Inter", sans-serif;
 }
+
 h1, h2, h3, h4, h5, h6 {
     font-family: "Inter", sans-serif;
     letter-spacing: -0.02em;
 }
+
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.12;
-    background-image:
-        linear-gradient(to right, rgba(47, 128, 237, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(91, 61, 245, 0.045) 1px, transparent 1px);
-    background-size: 22px 22px;
     z-index: -2;
+    opacity: 0.14;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
 }
 
 body::after {
@@ -80,9 +86,9 @@ body::after {
     height: 180px;
     pointer-events: none;
     z-index: -1;
-    opacity: 0.4;
+    opacity: 0.28;
     background:
-        linear-gradient(180deg, transparent 0%, rgba(120, 173, 108, 0.10) 72%, rgba(120, 173, 108, 0.16) 100%);
+        linear-gradient(180deg, transparent 0%, rgba(120, 173, 108, 0.14) 100%);
 }
 
 .app-container {
@@ -116,16 +122,19 @@ body::after {
     padding: 0.55rem 0.9rem !important;
     transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
+
 .btn,
 .nav-link,
 .navbar-brand {
     font-family: "Inter", sans-serif;
 }
+
 .nav-link:hover,
 .nav-link:focus {
     color: var(--text-white) !important;
     background: rgba(255, 255, 255, 0.08);
 }
+
 .brand-mark {
     display: inline-flex;
     align-items: center;
@@ -145,6 +154,7 @@ body::after {
     font-size: 0.78rem;
     line-height: 1.2;
 }
+
 .city-badge {
     display: inline-flex;
     align-items: center;
@@ -165,10 +175,12 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 0.45rem 0.85rem;
+    padding: 0.5rem 0.95rem;
     border-radius: var(--radius-pill);
-    background: rgba(91, 61, 245, 0.08);
-    color: var(--primary);
+    background: rgba(91, 61, 245, 0.22);
+    color: #000000;
+    border: 1px solid rgba(160, 142, 255, 0.32);
+    box-shadow: 0 6px 14px rgba(91, 61, 245, 0.18);
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.04em;
