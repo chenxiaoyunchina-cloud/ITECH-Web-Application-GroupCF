@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+.idea/
+media/proofs/*.png
+media/proofs/*.jpg
+media/proofs/*.jpeg

@@ -1,16 +1,21 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Quest Progress | SideQuest City{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div
+    class="row justify-content-center"
+    id="quest-progress-page"
+    data-complete-url="{% url 'quests:quest_complete_page' %}"
+>
     <div class="col-lg-8">
         <section class="page-card p-4 p-md-5">
             <div class="mb-4">
                 <h1 class="display-6 fw-semibold mb-2">Quest progress</h1>
                 <p class="text-muted mb-0">
                     Track your quest locally while you complete the activity.
-                </p >
+                </p>
             </div>
 
             <div class="page-card p-4 border shadow-sm bg-white mb-4">
@@ -19,7 +24,7 @@
                         <h2 id="quest-title" class="h3 mb-2">No active quest</h2>
                         <p id="quest-description" class="text-muted mb-0">
                             Start a quest from the shuffle page first.
-                        </p >
+                        </p>
                     </div>
                     <span id="quest-type" class="badge text-bg-light">N/A</span>
                 </div>
@@ -103,9 +108,9 @@
                 <button id="save-progress-btn" type="button" class="btn btn-outline-primary">
                     Save progress
                 </button>
-                <a href="{% url 'quests:quest_complete_page' %}" class="btn btn-primary">
+                <button id="finish-quest-btn" type="button" class="btn btn-primary">
                     Finish quest
-                </a >
+                </button>
             </div>
 
             <div id="progress-message" class="alert alert-light border mt-4 mb-0">
@@ -117,61 +122,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const activeQuest = JSON.parse(localStorage.getItem("activeQuest") || "null");
-    const savedProgress = JSON.parse(localStorage.getItem("questProgress") || "null");
-
-    const titleEl = document.getElementById("quest-title");
-    const descEl = document.getElementById("quest-description");
-    const typeEl = document.getElementById("quest-type");
-    const cityEl = document.getElementById("quest-city");
-    const limitsEl = document.getElementById("quest-group-limits");
-    const durationEl = document.getElementById("quest-duration");
-
-    const elapsedEl = document.getElementById("elapsed-minutes");
-    const stepsEl = document.getElementById("progress-steps");
-    const distanceEl = document.getElementById("progress-distance");
-    const noteEl = document.getElementById("progress-note");
-    const checkboxes = document.querySelectorAll(".progress-check");
-    const saveBtn = document.getElementById("save-progress-btn");
-    const messageEl = document.getElementById("progress-message");
-
-    if (activeQuest) {
-        titleEl.textContent = activeQuest.name || "Current quest";
-        descEl.textContent = activeQuest.description || "Quest loaded.";
-        typeEl.textContent = activeQuest.type || "N/A";
-        cityEl.textContent = activeQuest.selected_city || "—";
-        limitsEl.textContent = activeQuest.group_limits || "—";
-        durationEl.textContent = activeQuest.duration ? `${activeQuest.duration} minutes` : "—";
-    }
-
-    if (savedProgress) {
-        elapsedEl.value = savedProgress.time_minutes || 0;
-        stepsEl.value = savedProgress.steps || 0;
-        distanceEl.value = savedProgress.distance_km || 0;
-        noteEl.value = savedProgress.note || "";
-
-        if (Array.isArray(savedProgress.checklist)) {
-            checkboxes.forEach((checkbox, index) => {
-                checkbox.checked = !!savedProgress.checklist[index];
-            });
-        }
-    }
-
-    saveBtn.addEventListener("click", function () {
-        const progressData = {
-            time_minutes: elapsedEl.value,
-            steps: stepsEl.value,
-            distance_km: distanceEl.value,
-            note: noteEl.value,
-            checklist: Array.from(checkboxes).map(cb => cb.checked),
-        };
-
-        localStorage.setItem("questProgress", JSON.stringify(progressData));
-        messageEl.className = "alert alert-success mt-4 mb-0";
-        messageEl.textContent = "Progress saved locally.";
-    });
-});
-</script>
+<script src="{% static 'js/pages/quest-progress.js' %}"></script>
 {% endblock %}

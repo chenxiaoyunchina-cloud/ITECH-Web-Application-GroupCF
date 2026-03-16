@@ -3,6 +3,10 @@
 
 {% block title %}Choose Your City | SideQuest City{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/city.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="city-page">
     <section class="hero">
@@ -10,7 +14,7 @@
             <h1 class="display-5 fw-bold mb-3">Choose Your City</h1>
             <p class="text-light mx-auto city-subtitle">
                 Select a city to explore and set your group size to get personalised quest recommendations.
-            </p >
+            </p>
         </div>
     </section>
 
@@ -52,7 +56,7 @@
                 type="hidden"
                 name="group_size"
                 id="group-size-input"
-                value="1"
+                value="{{ selected_group_size|default:1 }}"
             >
 
             <div class="city-grid mt-4" id="city-grid">
@@ -67,7 +71,7 @@
                         <div class="city-card-content">
                             <div>
                                 <h3 class="city-name">{{ city.name }}</h3>
-                                <p class="city-country">United Kingdom</p >
+                                <p class="city-country">United Kingdom</p>
                             </div>
 
                             <div class="city-meta">
@@ -78,7 +82,7 @@
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-muted">No cities available.</p >
+                <p class="text-muted">No cities available.</p>
                 {% endfor %}
             </div>
 
@@ -93,62 +97,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const cards = document.querySelectorAll(".city-card");
-    const selectedCityInput = document.getElementById("selected-city-id");
-    const searchInput = document.getElementById("city-search");
-
-    const minusBtn = document.getElementById("group-minus");
-    const plusBtn = document.getElementById("group-plus");
-    const groupValue = document.getElementById("group-size-value");
-    const groupInput = document.getElementById("group-size-input");
-
-    let groupSize = 1;
-
-    function updateGroupDisplay() {
-        groupValue.textContent = groupSize === 1 ? "1 person" : `${groupSize} people`;
-        groupInput.value = groupSize;
-    }
-
-    if (minusBtn) {
-        minusBtn.addEventListener("click", function () {
-            if (groupSize > 1) {
-                groupSize -= 1;
-                updateGroupDisplay();
-            }
-        });
-    }
-
-    if (plusBtn) {
-        plusBtn.addEventListener("click", function () {
-            if (groupSize < 10) {
-                groupSize += 1;
-                updateGroupDisplay();
-            }
-        });
-    }
-
-    cards.forEach(card => {
-        card.addEventListener("click", function () {
-            cards.forEach(c => c.classList.remove("selected"));
-            card.classList.add("selected");
-            selectedCityInput.value = card.dataset.cityId;
-        });
-    });
-
-    if (searchInput) {
-        searchInput.addEventListener("input", function () {
-            const keyword = searchInput.value.trim().toLowerCase();
-
-            cards.forEach(card => {
-                const cityName = card.dataset.cityName;
-                card.style.display = cityName.includes(keyword) ? "" : "none";
-            });
-        });
-    }
-
-    updateGroupDisplay();
-});
-</script>
+<script src="{% static 'js/pages/city-select.js' %}"></script>
 {% endblock %}

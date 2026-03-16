@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+    <div class="container app-container">
+        <a class="navbar-brand fw-bold" href="{% url 'accounts:home' %}">
+            SideQuest City
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <div class="navbar-nav me-auto">
+                <a class="nav-link" href="{% url 'accounts:home' %}">Home</a>
+                <a class="nav-link" href="{% url 'accounts:select_city' %}">Cities</a>
+                <a class="nav-link" href="{% url 'quests:shuffle_page' %}">Shuffle Quest</a>
+
+                {% if request.user.is_authenticated and request.user.selected_city %}
+                    <a class="nav-link" href="{% url 'social:feed_page' %}">Community</a>
+                    <a class="nav-link" href="{% url 'pins:map_page' %}">Explore Map</a>
+                {% endif %}
+
+                {% if request.user.is_staff %}
+                    <a class="nav-link" href="{% url 'pins:moderation_page' %}">Moderation</a>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                {% if request.user.is_authenticated and request.user.selected_city %}
+                    <span class="city-badge">
+                        {{ request.user.selected_city.name }}
+                    </span>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

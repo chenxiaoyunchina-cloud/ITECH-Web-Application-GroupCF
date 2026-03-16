@@ -1,17 +1,30 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Shuffle Quest | SideQuest City{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div
+    class="row justify-content-center"
+    id="quest-board"
+    data-selected-group-size="{{ selected_group_size|default:1 }}"
+    data-recommend-url="{% url 'quests:recommend_quest' %}"
+    data-shuffle-url="{% url 'quests:shuffle_quest' %}"
+    data-start-url="{% url 'quests:start_quest' %}"
+    data-progress-url="{% url 'quests:quest_progress_page' %}"
+>
     <div class="col-lg-8">
         <section class="page-card p-4 p-md-5">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                 <div>
                     <h1 class="display-6 fw-semibold mb-2">Shuffle your quest</h1>
-                    <p class="text-muted mb-0">
+                    <p class="text-muted mb-2">
                         Get a recommended city activity and reshuffle it instantly without leaving the page.
-                    </p >
+                    </p>
+                    <div class="small text-muted">
+                        Current group size:
+                        <span id="current-group-size" class="fw-semibold">{{ selected_group_size|default:1 }}</span>
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2">
@@ -34,7 +47,7 @@
                         <h2 id="quest-title" class="h3 mb-2">No quest loaded yet</h2>
                         <p id="quest-description" class="text-muted mb-0">
                             Click “Recommend quest” to load a suggested activity for your selected city.
-                        </p >
+                        </p>
                     </div>
                     <span id="quest-type" class="badge text-bg-light">N/A</span>
                 </div>
@@ -68,7 +81,7 @@
                     </button>
                     <a href="{% url 'quests:quest_progress_page' %}" class="btn btn-outline-secondary">
                         View progress page
-                    </a >
+                    </a>
                 </div>
             </div>
         </section>
@@ -77,129 +90,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const recommendBtn = document.getElementById("recommend-btn");
-    const shuffleBtn = document.getElementById("shuffle-btn");
-    const startBtn = document.getElementById("start-btn");
-
-    const statusMessage = document.getElementById("status-message");
-    const titleEl = document.getElementById("quest-title");
-    const descEl = document.getElementById("quest-description");
-    const typeEl = document.getElementById("quest-type");
-    const cityEl = document.getElementById("quest-city");
-    const groupLimitsEl = document.getElementById("quest-group-limits");
-    const durationEl = document.getElementById("quest-duration");
-
-    let currentQuest = null;
-    let currentGroupSize = 1;
-
-    function renderQuest(quest) {
-        currentQuest = quest;
-
-        titleEl.textContent = quest.name || "Unnamed quest";
-        descEl.textContent = quest.description || "No description available.";
-        typeEl.textContent = quest.type || "N/A";
-        cityEl.textContent = quest.selected_city || "—";
-        groupLimitsEl.textContent = quest.group_limits || "—";
-        durationEl.textContent = quest.duration ? `${quest.duration} minutes` : "—";
-    }
-
-    async function loadQuest(url, successMessage) {
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (!response.ok) {
-                statusMessage.className = "alert alert-danger border mb-4";
-                statusMessage.textContent = data.error || "Unable to load quest.";
-                return;
-            }
-
-            renderQuest(data);
-            statusMessage.className = "alert alert-success border mb-4";
-            statusMessage.textContent = successMessage;
-        } catch (error) {
-            statusMessage.className = "alert alert-danger border mb-4";
-            statusMessage.textContent = "Unexpected error while loading quest.";
-        }
-    }
-
-    recommendBtn.addEventListener("click", function () {
-        loadQuest(`/recommend/?group_size=${currentGroupSize}`, "Quest recommended successfully.");
-    });
-
-    shuffleBtn.addEventListener("click", function () {
-        loadQuest(`/shuffle/?group_size=${currentGroupSize}`, "Quest shuffled successfully.");
-    });
-
-    startBtn.addEventListener("click", async function () {
-        if (!currentQuest || !currentQuest.id) {
-            statusMessage.className = "alert alert-warning border mb-4";
-            statusMessage.textContent = "Please load a quest first before starting.";
-            return;
-        }
-
-        try {
-            const response = await fetch("/start/", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: new URLSearchParams({
-                    quest_id: currentQuest.id,
-                    group_size: currentGroupSize,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                statusMessage.className = "alert alert-danger border mb-4";
-                statusMessage.textContent = data.error || "Unable to start quest.";
-                return;
-            }
-
-            const activeQuest = {
-                run_id: data.run_id,
-                id: data.quest.id,
-                name: data.quest.name,
-                type: data.quest.type,
-                duration: data.quest.duration,
-                selected_city: data.city.name,
-                group_limits: currentQuest.group_limits,
-                description: currentQuest.description,
-                started_at: data.started_at,
-                status: data.status,
-            };
-
-            localStorage.setItem("activeQuest", JSON.stringify(activeQuest));
-
-            statusMessage.className = "alert alert-success border mb-4";
-            statusMessage.textContent = `Quest started successfully. Run ID: ${data.run_id}`;
-
-            window.location.href = "{% url 'quests:quest_progress_page' %}";
-        } catch (error) {
-            statusMessage.className = "alert alert-danger border mb-4";
-            statusMessage.textContent = "Unexpected error while starting quest.";
-        }
-    });
-});
-</script>
+<script src="{% static 'js/pages/quest-shuffle.js' %}"></script>
 {% endblock %}

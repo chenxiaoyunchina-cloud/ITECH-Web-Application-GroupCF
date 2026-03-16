@@ -1,0 +1,56 @@
+main {
+    min-height: calc(100vh - 96px);
+}
+
+.app-shell {
+    padding-top: 18px;
+    padding-bottom: 36px;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 1.5rem;
+}
+
+.hero-surface {
+    background: linear-gradient(135deg, rgba(91, 61, 245, 0.08), rgba(47, 128, 237, 0.08));
+}
+
+.card-stack {
+    display: grid;
+    gap: 18px;
+}
+
+.content-grid-two {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 991px) {
+    .app-navbar {
+        width: calc(100% - 18px);
+        margin-top: 10px;
+        border-radius: 20px;
+    }
+
+    main {
+        min-height: calc(100vh - 84px);
+    }
+
+    .content-grid-two {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575px) {
+    .app-shell {
+        padding-top: 14px;
+        padding-bottom: 24px;
+    }
+
+    .page-card {
+        border-radius: 18px;
+    }
+}

@@ -1,0 +1,191 @@
+:root {
+    --bg-page: #eef3fb;
+    --bg-page-soft: #f6f8fd;
+    --bg-surface: #ffffff;
+    --bg-surface-soft: #fbfdff;
+    --bg-paper: #fffef8;
+    --bg-dark: #18233c;
+    --bg-dark-soft: #24314f;
+    --bg-panel: #1d2944;
+
+    --primary: #5b3df5;
+    --primary-strong: #4a2be7;
+    --secondary: #2f80ed;
+    --secondary-strong: #2569c7;
+    --accent: #60d394;
+    --accent-strong: #2fbf71;
+    --warm: #f2c6a0;
+    --gold: #f6c453;
+
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-soft: #94a3b8;
+    --text-light: #f8fafc;
+    --text-white: #ffffff;
+
+    --border: #dfe5ef;
+    --border-strong: #d3dceb;
+    --border-dark: #33445f;
+
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
+    --shadow-card: 0 12px 28px rgba(15, 23, 42, 0.08);
+    --shadow-nav: 0 10px 24px rgba(15, 23, 42, 0.14);
+    --shadow-panel: 0 12px 24px rgba(15, 23, 42, 0.12);
+
+    --max-width: 1160px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        linear-gradient(180deg, #f2f6fd 0%, #e8eef8 58%, #dde7f5 100%);
+    color: var(--text-main);
+    position: relative;
+    overflow-x: hidden;
+    font-family: "Inter", sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.02em;
+}
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image:
+        linear-gradient(to right, rgba(47, 128, 237, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(91, 61, 245, 0.045) 1px, transparent 1px);
+    background-size: 22px 22px;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 180px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.4;
+    background:
+        linear-gradient(180deg, transparent 0%, rgba(120, 173, 108, 0.10) 72%, rgba(120, 173, 108, 0.16) 100%);
+}
+
+.app-container {
+    max-width: var(--max-width);
+}
+
+.app-shell {
+    position: relative;
+    z-index: 1;
+}
+
+.app-navbar {
+    margin: 14px auto 0;
+    width: min(calc(100% - 24px), var(--max-width));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-dark-soft) 100%);
+    box-shadow: var(--shadow-nav);
+}
+
+.navbar-brand {
+    color: var(--text-white) !important;
+    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+}
+
+.nav-link {
+    color: rgba(248, 250, 252, 0.82) !important;
+    font-weight: 600;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 0.9rem !important;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.btn,
+.nav-link,
+.navbar-brand {
+    font-family: "Inter", sans-serif;
+}
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--text-white) !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.brand-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    display: block;
+}
+
+.brand-text {
+    font-family: "Press Start 2P", monospace;
+    font-size: 0.78rem;
+    line-height: 1.2;
+}
+.city-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: rgba(96, 211, 148, 0.14);
+    color: #d1fae5;
+    border: 1px solid rgba(96, 211, 148, 0.2);
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.section-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: rgba(91, 61, 245, 0.08);
+    color: var(--primary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.pixel-texture {
+    position: relative;
+}
+
+.pixel-texture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image:
+        linear-gradient(45deg, rgba(91, 61, 245, 0.04) 25%, transparent 25%, transparent 50%, rgba(91, 61, 245, 0.04) 50%, rgba(91, 61, 245, 0.04) 75%, transparent 75%, transparent);
+    background-size: 16px 16px;
+}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Community Feed | SideQuest City{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/feed.css' %}">
+{% endblock %}
+
+{% block content %}
+<div
+    id="community-feed-page"
+    class="feed-page"
+    data-feed-url="{% url 'social:post_feed' %}"
+    data-comments-template="{% url 'social:post_comments' 0 %}"
+    data-react-template="{% url 'social:set_reaction' 0 %}"
+>
+    <div class="feed-layout">
+        <section class="feed-main">
+            <div class="page-card feed-hero p-4 p-md-5 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h1 class="display-6 fw-semibold mb-2">Community Feed</h1>
+                        <p class="text-muted mb-0">
+                            See what other explorers in your city have completed, reacted to, and commented on.
+                        </p>
+                    </div>
+
+                    {% if request.user.selected_city %}
+                    <div class="feed-city-chip">
+                        {{ request.user.selected_city.name }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="feed-status" class="alert alert-light border mb-4">
+                Loading community posts...
+            </div>
+
+            <div id="feed-list" class="feed-list"></div>
+
+            <div class="mt-4 d-flex justify-content-center">
+                <button id="load-more-btn" type="button" class="btn btn-outline-primary d-none">
+                    Load more
+                </button>
+            </div>
+        </section>
+
+        <aside class="feed-sidebar">
+            <div class="page-card p-4 mb-4">
+                <h3 class="h5 mb-3">What you can do here</h3>
+                <ul class="feed-side-list mb-0">
+                    <li>Browse public posts from your selected city</li>
+                    <li>React with Like, Love, or Wow</li>
+                    <li>Open and add comments</li>
+                    <li>See proof images and run details</li>
+                </ul>
+            </div>
+
+            <div class="page-card p-4">
+                <h3 class="h5 mb-3">Quick links</h3>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'quests:shuffle_page' %}" class="btn btn-primary">Shuffle a quest</a>
+                    <a href="{% url 'quests:quest_progress_page' %}" class="btn btn-outline-secondary">Quest progress</a>
+                    <a href="{% url 'accounts:select_city' %}" class="btn btn-outline-secondary">Change city</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/pages/feed.js' %}"></script>
+{% endblock %}
