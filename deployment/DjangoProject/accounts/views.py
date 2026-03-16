@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from django.views.decorators.http import require_http_methods
 
 from world.models import City
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 
 
 @login_required
