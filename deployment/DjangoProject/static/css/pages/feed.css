@@ -11,8 +11,16 @@
 }
 
 .feed-hero {
-    background: linear-gradient(135deg, rgba(91, 61, 245, 0.08), rgba(47, 128, 237, 0.08));
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(223, 229, 239, 0.72);
+    box-shadow: var(--shadow-soft);
 }
+#feed-status {
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(223, 229, 239, 0.68);
+    color: var(--text-main);
+}
+.feed-hero .text-muted,
 
 .feed-city-chip {
     display: inline-flex;
