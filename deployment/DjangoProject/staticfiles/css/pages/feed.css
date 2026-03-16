@@ -1,0 +1,230 @@
+.feed-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.feed-main,
+.feed-sidebar {
+    min-width: 0;
+}
+
+.feed-hero {
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(223, 229, 239, 0.72);
+    box-shadow: var(--shadow-soft);
+}
+#feed-status {
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(223, 229, 239, 0.68);
+    color: var(--text-main);
+}
+.feed-hero .text-muted {
+    color: #000000 !important;
+}
+
+.feed-city-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    background: rgba(91, 61, 245, 0.1);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.feed-list {
+    display: grid;
+    gap: 18px;
+}
+
+.feed-post {
+    padding: 1.25rem;
+}
+
+.feed-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 1rem;
+}
+
+.feed-post-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.feed-user-line {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.feed-sub-line {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.feed-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0.75rem 0 1rem;
+}
+
+.feed-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.feed-note {
+    margin-top: 0.75rem;
+    color: var(--text-main);
+    white-space: pre-wrap;
+}
+
+.feed-proof {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feed-proof img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.feed-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.feed-reaction-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.feed-reaction-btn {
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    min-width: 64px;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.feed-reaction-btn.active {
+    border-color: var(--primary);
+    background: rgba(91, 61, 245, 0.1);
+    color: var(--primary);
+    font-weight: 700;
+    box-shadow: 0 0 0 3px rgba(91, 61, 245, 0.12);
+}
+
+.feed-reaction-btn:hover {
+    transform: translateY(-1px);
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.feed-reaction-btn:focus {
+    outline: 3px solid rgba(47, 128, 237, 0.18);
+    box-shadow: none;
+}
+
+.feed-reaction-btn:active {
+    transform: scale(0.97);
+}
+
+.feed-reaction-btn.active:hover {
+    background: rgba(91, 61, 245, 0.14);
+}
+
+.feed-comments-wrap {
+    margin-top: 1rem;
+    display: none;
+}
+
+.feed-comments-wrap.open {
+    display: block;
+}
+
+.feed-comments-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.feed-comment {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    background: #fbfdff;
+}
+
+.feed-comment-user {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.feed-comment-text {
+    color: var(--text-main);
+    white-space: pre-wrap;
+}
+
+.feed-comment-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.feed-comment-form textarea {
+    min-height: 44px;
+    resize: vertical;
+}
+
+.feed-side-list {
+    padding-left: 1.1rem;
+    color: var(--text-muted);
+}
+
+.feed-empty {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 991px) {
+    .feed-layout {
+        grid-template-columns: 1fr;
+    }
+}
