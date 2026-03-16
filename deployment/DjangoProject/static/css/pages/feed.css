@@ -20,7 +20,9 @@
     border: 1px solid rgba(223, 229, 239, 0.68);
     color: var(--text-main);
 }
-.feed-hero .text-muted,
+.feed-hero .text-muted {
+    color: #000000 !important;
+}
 
 .feed-city-chip {
     display: inline-flex;
