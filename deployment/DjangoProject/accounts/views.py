@@ -36,7 +36,7 @@ def select_city(request):
 
         request.session["group_size"] = group_size
 
-        return redirect("accounts:select_city")
+        return redirect("quests:shuffle_page")
 
     cities = City.objects.all().order_by("name")
     return render(
