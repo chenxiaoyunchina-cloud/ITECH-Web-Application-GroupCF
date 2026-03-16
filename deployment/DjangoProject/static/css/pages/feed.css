@@ -84,16 +84,24 @@
 
 .feed-proof {
     margin-top: 1rem;
-    border-radius: 14px;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--border);
-    background: #f8fafc;
+    background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .feed-proof img {
-    display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    display: block;
+    object-fit: cover;
 }
 
 .feed-actions {
