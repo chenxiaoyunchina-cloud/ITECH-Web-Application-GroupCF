@@ -131,7 +131,7 @@ AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/me/city/"
+LOGIN_REDIRECT_URL = "accounts:home"
 LOGOUT_REDIRECT_URL = "/login/"
 
 MEDIA_URL = "/media/"
