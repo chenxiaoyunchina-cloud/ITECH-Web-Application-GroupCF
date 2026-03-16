@@ -11,15 +11,22 @@
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
     <link rel="stylesheet" href="{% static 'css/components.css' %}">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
     <div class="container app-container">
-        <a class="navbar-brand fw-bold" href="{% url 'accounts:home' %}">
-            SideQuest City
+        <a class="navbar-brand brand-mark fw-bold" href="{% url 'accounts:home' %}">
+            <img
+                src="{% static 'images/brand/logo.png' %}"
+                alt="SideQuest City logo"
+                class="brand-logo"
+            >
+            <span class="brand-text">SideQuest City</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +34,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNav">
-            <div class="navbar-nav me-auto">
+            <div class="navbar-nav me-auto gap-lg-1">
                 <a class="nav-link" href="{% url 'accounts:home' %}">Home</a>
                 <a class="nav-link" href="{% url 'accounts:select_city' %}">Cities</a>
                 <a class="nav-link" href="{% url 'quests:shuffle_page' %}">Shuffle Quest</a>
@@ -37,7 +44,7 @@
                 {% endif %}
             </div>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                 {% if request.user.is_authenticated and request.user.selected_city %}
                     <span class="city-badge">
                         {{ request.user.selected_city.name }}
@@ -55,7 +62,7 @@
     </div>
 </nav>
 
-<main class="container app-container py-4">
+<main class="app-shell container app-container">
     {% block content %}{% endblock %}
 </main>
 

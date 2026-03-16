@@ -92,7 +92,14 @@ def home(request):
     if not request.user.is_authenticated:
         return redirect("/login/")
 
-    if getattr(request.user, "selected_city", None) is None:
-        return redirect("/me/city/")
+    selected_city = getattr(request.user, "selected_city", None)
+    selected_group_size = request.session.get("group_size", 1)
 
-    return redirect("quests:shuffle_page")
+    return render(
+        request,
+        "home/dashboard.html",
+        {
+            "selected_city": selected_city,
+            "selected_group_size": selected_group_size,
+        },
+    )

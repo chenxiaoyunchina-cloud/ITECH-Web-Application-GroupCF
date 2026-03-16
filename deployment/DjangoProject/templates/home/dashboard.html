@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SideQuest City | Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-hero page-card p-4 p-md-5 mb-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="section-kicker mb-3">Explore • Play • Share</span>
+
+            <h1 class="display-5 fw-bold mb-3">
+                Turn your city into a social adventure.
+            </h1>
+
+            <p class="hero-lead text-muted mb-4">
+                SideQuest City helps you discover fun local activities, track your progress,
+                complete real-world quests, and share your experience with a community feed.
+            </p>
+
+            <div class="hero-button-row d-flex flex-wrap gap-2">
+                {% if selected_city %}
+                    <a href="{% url 'quests:shuffle_page' %}" class="btn btn-primary">
+                        Start a Quest
+                    </a>
+                    <a href="{% url 'social:feed_page' %}" class="btn btn-outline-primary">
+                        Community Feed
+                    </a>
+                    <a href="{% url 'accounts:select_city' %}" class="btn btn-outline-secondary">
+                        Change City
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:select_city' %}" class="btn btn-primary">
+                        Choose Your City
+                    </a>
+                    <a href="{% url 'quests:shuffle_page' %}" class="btn btn-outline-secondary">
+                        Quest Board
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="hero-visual-wrap mb-3">
+                <img
+                    src="{% static 'images/home/hero-city-quest.png' %}"
+                    alt="Pixel art city exploration quest illustration"
+                    class="hero-art"
+                >
+            </div>
+
+            <div class="hero-status-card">
+                <h2 class="h5 fw-semibold mb-3">Your current setup</h2>
+
+                <div class="status-item">
+                    <div class="status-label">Selected city</div>
+                    <div class="status-value">
+                        {% if selected_city %}
+                            {{ selected_city.name }}
+                        {% else %}
+                            No city selected yet
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="status-item">
+                    <div class="status-label">Group size</div>
+                    <div class="status-value">
+                        {{ selected_group_size }}
+                        {% if selected_group_size == 1 %}
+                            person
+                        {% else %}
+                            people
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="status-item">
+                    <div class="status-label">Next best step</div>
+                    <div class="status-value">
+                        {% if selected_city %}
+                            Shuffle a quest and start exploring
+                        {% else %}
+                            Pick a city to unlock local quests
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="page-card feature-card p-4 h-100">
+            <div class="feature-image-wrap">
+                <img
+                    src="{% static 'images/home/sticker-recommendation.png' %}"
+                    alt="Quest recommendation sticker"
+                    class="feature-image"
+                    loading="lazy"
+                >
+            </div>
+            <h3 class="h5 fw-semibold mb-2">Get quest recommendations</h3>
+            <p class="text-muted mb-0">
+                Discover activities tailored to your selected city and group size, then reshuffle anytime.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="page-card feature-card p-4 h-100">
+            <div class="feature-image-wrap">
+                <img
+                    src="{% static 'images/home/sticker-track-run.png' %}"
+                    alt="Quest tracking sticker"
+                    class="feature-image"
+                    loading="lazy"
+                >
+            </div>
+            <h3 class="h5 fw-semibold mb-2">Track and complete runs</h3>
+            <p class="text-muted mb-0">
+                Save progress, upload proof, and log time, distance, and steps for each quest run.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="page-card feature-card p-4 h-100">
+            <div class="feature-image-wrap">
+                <img
+                    src="{% static 'images/home/sticker-share-community.png' %}"
+                    alt="Community sharing sticker"
+                    class="feature-image"
+                    loading="lazy"
+                >
+            </div>
+            <h3 class="h5 fw-semibold mb-2">Share with the community</h3>
+            <p class="text-muted mb-0">
+                Publish completed runs to the city feed, react to others, and join the social layer of exploration.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="page-card p-4 p-md-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="h4 fw-semibold mb-2">Quick actions</h2>
+            <p class="text-muted mb-0">
+                Jump straight into the parts of the app you will use most.
+            </p>
+        </div>
+    </div>
+
+    <div class="quick-actions-grid">
+        <a href="{% url 'accounts:select_city' %}" class="quick-action-card">
+            <div class="quick-action-image-wrap">
+                <img
+                    src="{% static 'images/home/icon-city-select.png' %}"
+                    alt="Choose city icon"
+                    class="quick-action-image"
+                    loading="lazy"
+                >
+            </div>
+            <div>
+                <div class="quick-action-title">Choose or Change City</div>
+                <div class="quick-action-text">Update where your quests and community feed are based.</div>
+            </div>
+        </a>
+
+        <a href="{% url 'quests:shuffle_page' %}" class="quick-action-card">
+            <div class="quick-action-image-wrap">
+                <img
+                    src="{% static 'images/home/icon-shuffle-quest.png' %}"
+                    alt="Shuffle quest icon"
+                    class="quick-action-image"
+                    loading="lazy"
+                >
+            </div>
+            <div>
+                <div class="quick-action-title">Shuffle Quest</div>
+                <div class="quick-action-text">Get a recommendation and begin a new quest run.</div>
+            </div>
+        </a>
+
+        <a href="{% url 'quests:quest_progress_page' %}" class="quick-action-card">
+            <div class="quick-action-image-wrap">
+                <img
+                    src="{% static 'images/home/icon-quest-progress.png' %}"
+                    alt="Quest progress icon"
+                    class="quick-action-image"
+                    loading="lazy"
+                >
+            </div>
+            <div>
+                <div class="quick-action-title">Quest Progress</div>
+                <div class="quick-action-text">Continue tracking an active run stored in your browser.</div>
+            </div>
+        </a>
+
+        <a href="{% url 'social:feed_page' %}" class="quick-action-card">
+            <div class="quick-action-image-wrap">
+                <img
+                    src="{% static 'images/home/icon-community-feed.png' %}"
+                    alt="Community feed icon"
+                    class="quick-action-image"
+                    loading="lazy"
+                >
+            </div>
+            <div>
+                <div class="quick-action-title">Community Feed</div>
+                <div class="quick-action-text">See what others have completed and shared in your city.</div>
+            </div>
+        </a>
+    </div>
+</section>
+{% endblock %}
