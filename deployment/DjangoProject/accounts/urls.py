@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from .forms import LoginForm
 
 app_name = "accounts"
 
@@ -12,11 +13,12 @@ urlpatterns = [
         "login/",
         auth_views.LoginView.as_view(
             template_name="accounts/login.html",
-            authentication_form=views.LoginForm,
+            authentication_form=LoginForm,
         ),
         name="login",
     ),
     path("logout/", views.logout_view, name="logout"),
     path("me/", views.me, name="me"),
     path("me/city/", views.select_city, name="select_city"),
+    path("profile/", views.profile_page, name="profile"),
 ]

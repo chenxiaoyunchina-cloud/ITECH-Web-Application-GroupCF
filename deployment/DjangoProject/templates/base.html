@@ -37,6 +37,7 @@
             <div class="navbar-nav me-auto gap-lg-1">
                 {% if request.user.is_authenticated %}
                     <a class="nav-link" href="{% url 'accounts:home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a>
                     <a class="nav-link" href="{% url 'accounts:select_city' %}">Cities</a>
                     <a class="nav-link" href="{% url 'quests:shuffle_page' %}">Shuffle Quest</a>
 

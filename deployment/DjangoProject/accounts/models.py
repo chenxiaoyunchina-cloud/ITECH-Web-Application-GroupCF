@@ -10,7 +10,6 @@ class User(AbstractUser):
         MODERATOR = "MODERATOR", "Moderator"
         ADMIN = "ADMIN", "Admin"
 
-    # make email unique (AbstractUser has email already, but not unique by default)
     email = models.EmailField(unique=True)
 
     role = models.CharField(
@@ -25,6 +24,12 @@ class User(AbstractUser):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="users",
+    )
+
+    avatar = models.ImageField(
+        upload_to="avatars/",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):

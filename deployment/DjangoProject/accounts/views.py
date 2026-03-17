@@ -6,8 +6,9 @@ from django.contrib.auth import login, logout
 from django.views.decorators.http import require_http_methods
 
 from world.models import City
-from .forms import RegisterForm, LoginForm
-
+from .forms import RegisterForm, ProfileForm
+from quests.models import QuestRun
+from social.models import Post
 
 @login_required
 def select_city(request):
@@ -68,6 +69,41 @@ def me(request):
     }
     return JsonResponse(data)
 
+@login_required
+def profile_page(request):
+    user = request.user
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("accounts:profile")
+    else:
+        form = ProfileForm(instance=user)
+
+    completed_runs = QuestRun.objects.filter(
+        user=user,
+        status=QuestRun.Status.COMPLETED
+    ).count()
+
+    in_progress_runs = QuestRun.objects.filter(
+        user=user,
+        status=QuestRun.Status.IN_PROGRESS
+    ).count()
+
+    published_posts = Post.objects.filter(run__user=user).count()
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "form": form,
+            "selected_group_size": request.session.get("group_size", 1),
+            "completed_runs": completed_runs,
+            "in_progress_runs": in_progress_runs,
+            "published_posts": published_posts,
+        },
+    )
 
 def register(request):
     if request.method == "POST":

@@ -53,3 +53,22 @@ class LoginForm(AuthenticationForm):
             "placeholder": "Enter your password"
         })
     )
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ("username", "email", "avatar")
+        widgets = {
+            "username": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Update your username"
+            }),
+            "email": forms.EmailInput(attrs={
+                "class": "form-control",
+                "placeholder": "Update your email"
+            }),
+            "avatar": forms.ClearableFileInput(attrs={
+                "class": "form-control",
+                "accept": "image/*"
+            }),
+        }
